@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Alias The Best</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:800,700,600,400,300&subset=cyrillic-ext,latin' rel='stylesheet' type='text/css'>
+<style type="text/css">
+body {
+			margin: 0 auto;
+			font-size: 14px;
+			font-family: 'Open Sans', sans-serif;
+			text-align: center;
+		}
+
+#word {
+	margin: 100px;
+	font-size: 30px;
+	font-weight: 600;
+}
+
+#timer {
+	margin: 100px;
+	font-size: 60px;
+	font-weight: 600;
+}
+
+#guessedBTN {
+	font-size: 50px;
+	margin: 0 120px 120px 120px;
+	background: rgba(0, 200,0,0.6);
+	padding: 20px;
+	width: 250px;
+	display: inline-block;
+	cursor: pointer;
+}
+
+#skipBTN {
+	background: rgba(200, 0,0,0.6);
+	font-size: 50px;
+	margin: 0 120px 120px 0px;
+	padding: 20px;
+	width: 250px;
+	display: inline-block;
+	cursor: pointer;
+}
+
+#newRound {
+	background: rgba(0, 0,200,0.6);
+	font-size: 50px;
+	margin: 0 0 120px 0;
+	padding: 20px;
+	width: 250px;
+	display: inline-block;
+	cursor: pointer;
+}
+
+#counter {
+	font-size: 50px;
+	margin: 0 120px 120px 120px;
+	padding: 20px;
+}
+
+</style>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	var words = [" like ", " think ", " go ", " look ", " him ", " work ", " after ", " call ", " next ", " pay ", " enough ", " best ", " close ", " twelve ", " box ", " break ", " clean ", " corner ", " skill ", " twice ", " flow ", " clever ", " beach ", " bury ", " hint ", " shave ", " bat ", " clap ", " grumble ", " loot ", " streamline ", " trundle ", " shrivel ", " pastiche ", " discomfit ", " sully ", " soothsayer ", " sedulous ", " vibrissae ", " uxoricide ", "", " clay ", " crush ", " summit ", " carve ", " lap ", " harsh ", " clutch ", " scrub ", " toss ", " sword ", " bounce ", " drum ", " stance ", " tease ", " cellar ", " bald ", " portray ", " grim ", " tan ", " refurbish ", " saddle ", " scent ", " wallet ", " mist ", " meadow ", " tickle ", " hollow ", " forbid ", " drip ", " warranty ", " stern ", " cute ", " alley ", " junk ", " hamper ", " gleam ", " plank ", " blink ", " bait ", " juggle ", " tinker ", " drought ", " dangle ", " outright ", " beware ", " wriggle ", " glide ", " cradle ", " ledge ", " feeble ", " seep ", " greed ", " shrine ", " stoop ", " numb ", " bustle ", " burp ", " sloppy ", " drab ", " dagger ", " throttle ", " rebuke ", " resilient ", " topple ", " blunder ", " stead ", " natter ", " deflect ", " flurry ", " whim ", " shaggy ", " shrill ", " stubble ", " rampant”, “", " like ", " think ", " go ", " look ", " him ", " here ", " after ", " ask ", " next ", " pay ", " while ", " hope ", " close ", " tomorrow ", " near ", " ring ", " fish ", " arrive ", " rise ", " suit ", " bright ", " tool ", " moon ", " soul ", " constraint ", " clay ", " stance ", " meadow ", " plank ", " ledge ", " throttle ", " reproach ", " ostrich ", " ajar ", " botch ", " inveigle ", " mawkish ", " raiment ", " legerdemain ", " uxoricide ", "", " ankle ", " drum ", " bat ", " mercy ", " cellar ", " bald ", " invoice ", " grim ", " tan ", " deed ", " saddle ", " scent ", " belly ", " wallet ", " dairy ", " clap ", " hollow ", " stove ", " forbid ", " warranty ", " contempt ", " cute ", " alley ", " junk ", " hamper ", " gleam ", " grumble ", " ruthless ", " blink ", " juggle ", " tinker ", " drought ", " dangle ", " derelict ", " beware ", " wriggle ", " overt ", " cradle ", " wag ", " feeble ", " seep ", " embankment ", " shrine ", " stoop ", " raft ", " bustle ", " burp ", " swivel ", " drab ", " dagger ", " streamline ", " napkin ", " resilient ", " topple ", " simmer ", " stead ", " natter ", " slough ", " deflect ", " whim ", " accomplish ", " shrill ", " trundle ", " rampant ", " judicious ", " whiff ", " tandem ", " scathing ", " rind ", " strife ", " weasel ", " bawl ", " spool ", " writhe ", " pittance ", " shrivel ", " easel ", " mayhem ", " rascal ", " fledgling ", " signet ", " befit ", " lore ", " extol ", " tipple ", " strop ", " stirrup ", " pastiche ", " eavesdrop ", " squelch ", " squall ", " abscond ", " shard ", " barnacle ", " chaste ", " suffuse ", " cozy ", " ingratiate ", " sapling ", " discomfit ", " burgeon ", " tawdry ", " minutiae ", " redolent ", " nib ", " rancid ", " dirge ", " portmanteau ", " chivvy ", " udder ", " tureen ", " prig ", " sully ", " stealth ", " whiff ", " tandem ", " sham ", " rind ", " strife ", " grouse ", " bawl ", " spool ", " ostrich ", " pittance ", " ballast ", " easel ", " mayhem ", " cower ", " fledgling ", " signet ", " dowdy ", " lore ", " extol ", " strop ", " stirrup ", " ajar ", " midget ", " squelch ", " welter ", " squall ", " puny ", " shard ", " barnacle ", " suffuse ", " bludgeon ", " cozy ", " conflate ", " sapling ", " botch ", " awry ", " burgeon "];
+	var gameLength = 60;
+	var timer;
+	var skippedCount = 0;
+	var guessedCount = 0;
+
+	function getRandomInt(min, max) {
+	  return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	function setRandomWord() {
+		var randomWord = words[getRandomInt(0, words.length - 1)];
+		document.getElementById("wordToGuess").innerHTML = randomWord;
+	}
+
+	function updateTimer() {
+		secondsLeft--;
+		
+		if (secondsLeft == 0) {
+			document.getElementById("timer").innerHTML = "Time's up!";
+			window.clearInterval(timer);
+			
+			var audio = new Audio('Quack Quack.mp3');
+			audio.play();
+
+			$("#newRound").show();
+			$("#guessedBTN").hide();
+			$("#skipBTN").hide();
+		}
+		else {
+			document.getElementById("timer").innerHTML = secondsLeft;
+		}
+	}
+
+	function startGame() {
+		secondsLeft = gameLength;
+		setRandomWord();
+		$("#newRound").hide();
+		$("#guessedBTN").show();
+		$("#skipBTN").show();
+		document.getElementById("timer").innerHTML = secondsLeft;
+		timer = window.setInterval(updateTimer, 1000);
+	}
+
+	function updateScore() {
+		document.getElementById("counter").innerHTML = "Score: " + (guessedCount - skippedCount);
+	}
+
+	$("#guessedBTN").click(function() {
+		guessedCount++;
+		updateScore();
+		setRandomWord();
+	});
+
+	$("#skipBTN").click(function() {
+		skippedCount++;
+		updateScore();
+		setRandomWord();
+	});
+
+	$("#newRound").click(function() {
+		startGame();
+	});
+
+	startGame();
+});
+</script>
+</head>
+<body>
+<div id="word"><span style="font-weight:800">Your word: </span><span id="wordToGuess">Word</span></div>
+<div id="timer">59</div>
+<div id="guessedBTN">Guessed</div>
+<div id="skipBTN">Skip</div>
+<div id="newRound">New Round</div>
+<div id="counter">Score: 0</div>
+</body>
+</html>
